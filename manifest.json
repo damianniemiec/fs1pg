@@ -1,0 +1,8 @@
+{
+  "domain": "fs1pg",
+  "name": "GWF-S171 Smart Wifi Plug",
+  "documentation": "https://github.com/damianniemiec/fs1pg",
+  "dependencies": [],
+  "codeowners": [],
+  "requirements": []
+}
