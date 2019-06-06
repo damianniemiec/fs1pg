@@ -1,8 +1,21 @@
 import socket, logging
-from homeassistant.components.switch import (SwitchDevice,\
-PLATFORM_SCHEMA, ATTR_CURRENT_POWER_W, ATTR_TODAY_ENERGY_KWH)
+import voluptuous as vol
+import homeassistant.helpers.config_validation as cv
+from homeassistant.components.switch import (SwitchDevice, PLATFORM_SCHEMA, ATTR_CURRENT_POWER_W, ATTR_TODAY_ENERGY_KWH)
+from homeassistant.const import CONF_FRIENDLY_NAME, CONF_SCAN_INTERVAL
 
 _LOGGER = logging.getLogger(__name__)
+
+CONF_MAC_ADDR = 'mac'
+CONF_IP_ADDR = 'ip'
+CONF_DEVICE_NAME = 'device_name'
+
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_MAC_ADDR): cv.string,
+    vol.Required(CONF_IP_ADDR): cv.string,
+    vol.Optional(CONF_DEVICE_NAME, default='fs1pg'): cv.string,
+    vol.Optional(CONF_FRIENDLY_NAME): cv.string,
+})
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
 	add_devices([FS1PG(config['device_name'], config['ip'], config['mac'])])
