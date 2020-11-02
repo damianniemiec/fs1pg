@@ -1,5 +1,8 @@
 # GWF-S171 Smart Wifi Plug component for Home Assistant
 
+## fork from:
+https://github.com/damianniemiec/fs1pg
+
 ## Tested on:
 * Ferguson Smart WiFi Plug FS1PG (http://ferguson-digital.eu/inteligentny-dom-ferguson/inteligentna-wtyczka-smart-w-fi-plug/)
 ### Could work with (not tested):
