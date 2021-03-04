@@ -1,37 +1,45 @@
 import socket, logging
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.switch import (SwitchDevice, PLATFORM_SCHEMA, ATTR_CURRENT_POWER_W, ATTR_TODAY_ENERGY_KWH)
+from homeassistant.components.switch import (SwitchEntity, PLATFORM_SCHEMA, ATTR_CURRENT_POWER_W, ATTR_TODAY_ENERGY_KWH)
 from homeassistant.const import CONF_FRIENDLY_NAME, CONF_SCAN_INTERVAL
+
+DOMAIN = "fs1pg"
 
 _LOGGER = logging.getLogger(__name__)
 
 CONF_MAC_ADDR = 'mac'
 CONF_IP_ADDR = 'ip'
 CONF_DEVICE_NAME = 'device_name'
+CONF_BROADCAST = 'broadcast'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_MAC_ADDR): cv.string,
     vol.Required(CONF_IP_ADDR): cv.string,
     vol.Optional(CONF_DEVICE_NAME, default='fs1pg'): cv.string,
+#     vol.Optional(CONF_SCAN_INTERVAL, default=60)
     vol.Optional(CONF_FRIENDLY_NAME): cv.string,
+    vol.Optional(CONF_BROADCAST): cv.boolean,
 })
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
-	add_devices([FS1PG(config['device_name'], config['ip'], config['mac'])])
+	add_devices([FS1PG(config['device_name'], config['ip'], config['mac'], config['broadcast'])])
 
-class FS1PG(SwitchDevice):
+	return True
+
+class FS1PG(SwitchEntity):
 	message_on = '0101010180000000010000005c6c5c6c0000000000000000000000000000000000000000000000000000000000000000xxxxxxxxxxxx0000000000000000000001000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
 	message_off = '0101010180000000010000005c6c5c6c0000000000000000000000000000000000000000000000000000000000000000xxxxxxxxxxxx0000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
 	message_info = '0101030138000000010000005c6c5c6c0000000000000000000000000000000000000000000000000000000000000000xxxxxxxxxxxx0000'
 	_state = False
 	_emeterParams = {}
 
-	def __init__(self, deviceName, ip, mac):
+	def __init__(self, deviceName, ip, mac, broadcast = False):
 		self.deviceName = deviceName
 		self.ip = ip
 		self.mac = mac.replace(':', '').replace('-', '')
 		self.port = 9957
+		self.broadcast = broadcast
 		self._emeterParams = {}
 		self.update()
 
@@ -50,6 +58,8 @@ class FS1PG(SwitchDevice):
 	def turn_on(self, **kwargs):
 		message = bytearray.fromhex(self.message_on.replace('xxxxxxxxxxxx', self.mac))
 		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		if(self.broadcast):
+			sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 		sock.sendto(message, (self.ip, self.port))
 		sock.close()
 		self.update()
@@ -57,6 +67,8 @@ class FS1PG(SwitchDevice):
 	def turn_off(self, **kwargs):
 		message = bytearray.fromhex(self.message_off.replace('xxxxxxxxxxxx', self.mac))
 		sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		if(self.broadcast):
+			sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 		sock.sendto(message, (self.ip, self.port))
 		sock.close()
 		self.update()
@@ -65,6 +77,8 @@ class FS1PG(SwitchDevice):
 		try:
 			message = bytearray.fromhex(self.message_info.replace('xxxxxxxxxxxx', self.mac))
 			sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+			if(self.broadcast):
+				sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 			sock.settimeout(5)
 			sock.sendto(message, (self.ip, self.port))
 			data = sock.recv(2048)
