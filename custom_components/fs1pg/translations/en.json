@@ -1,0 +1,17 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Device is already configured"
+    },
+    "step": {
+      "user": {
+        "title": "FS1PG (GWF-S171) Smart Wifi Plug",
+        "data": {
+          "mac": "Device MAC address",
+          "ip": "Device IP address",
+          "device_name": "Device name"
+        }
+      }
+    }
+  }
+}

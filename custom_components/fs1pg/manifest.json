@@ -6,5 +6,6 @@
   "issue_tracker": "https://github.com/damianniemiec/fs1pg/issues",
   "dependencies": [],
   "codeowners": [],
-  "requirements": []
+  "requirements": [],
+  "config_flow": true
 }

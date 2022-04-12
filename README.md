@@ -15,16 +15,20 @@ type: integration
 * WeConn
 * iSmartAlarm
 
-**Sample configuration (configuration.yaml):**
-```
-switch:
-  - platform: fs1pg
-    device_name: device_name # name
-    ip: "XXX.XXX.XXX.XXX" # plug ip address (could be network broadcast address like 192.168.0.255)
-    broadcast: false # set to true if broadcst
-    mac: "XX:XX:XX:XX:XX:XX" # plug MAC address
-    scan_interval: 10 # update interval
-```
+# Breaking changes:
+Remove all entries from configuration.yaml and add devices in integrations  
 
-MAC address can be found in app (ex. WeConn)
+[![http://www.google.pl](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=fs1pg)
+
+### Manual configuration steps
+If the above My button doesn’t work, you can also perform the following steps manually:  
+  
+Browse to your Home Assistant instance.  
+In the sidebar click on  [Configuration](https://my.home-assistant.io/redirect/config).  
+From the configuration menu select:  [Integrations](https://my.home-assistant.io/redirect/integrations).  
+In the bottom right, click on the  [Add Integration](https://my.home-assistant.io/redirect/config_flow_start?domain=fs1pg) button.  
+From the list, search and select “GWF-S171 Smart Wifi Plug”.  
+Follow the instruction on screen to complete the set up.  
+
+MAC address can be found in app (ex. WeConn)  
 ![WeConn screenshot](Screenshot_20181223-235137.jpg)
